@@ -1,0 +1,83 @@
+CODE SEGMENT
+ASSUME CS:CODE
+MAIN PROC FAR 
+
+     M:CALL JUCHI
+       CALL JUCHI
+       CALL FANGBO 
+       CALL FANGBO
+       CALL SANJIAO     
+       CALL SANJIAO
+       CALL JIETIBO
+       JMP M
+ 	   MOV AH,4CH
+       INT 21H
+       
+FANGBO PROC NEAR
+    
+    MOV AL,00H
+    MOV DX,0600H
+    OUT DX,AL
+    MOV CX,0FFFFH
+F1: LOOP F1
+    MOV AL,0FFH
+    MOV DX,0600H
+    OUT DX,AL
+    MOV CX,0FFFFH
+F2: LOOP F2
+    
+RET   
+FANGBO ENDP
+	 
+JUCHI PROC NEAR
+	  
+	  MOV AL,00H
+   Y1:MOV DX,0600H 
+      OUT DX,AL
+      INC AL
+      MOV CX,0FFH
+   Y2:LOOP Y2    
+      JNZ  Y1
+      RET     
+JUCHI ENDP     
+
+SANJIAO PROC NEAR
+      
+      MOV AL,00H
+   S1:MOV DX,0600H
+      OUT DX,AL
+      INC AL
+      MOV CX,0FFH
+   S2:LOOP S2
+      JNZ S1
+      DEC AL
+      DEC AL       ;消除平角 最大
+   S4:MOV DX,0600H
+      OUT DX,AL
+      DEC AL
+      MOV CX,0FFH
+   S5:LOOP S5
+      JNZ S4      ;变小      
+RET
+SANJIAO ENDP
+
+JIETIBO PROC NEAR
+      MOV AL,00H
+   J1:MOV DX,0600H
+      OUT DX,AL
+      ADD AL,10H
+      MOV CX,0FFFFH
+   J2:LOOP J2
+       JNZ J1
+   J3:MOV DX,0600H
+      SUB AL,10H
+      OUT DX,AL
+      MOV CX,0FFFFH
+    J4:LOOP J4
+       JNZ J3
+RET
+JIETIBO ENDP
+
+MAIN ENDP     
+CODE ENDS
+   END     

@@ -1,0 +1,27 @@
+DOS下全屏编辑器（8086 汇编） 
+
+要求： 
+a. 基本编辑 
+   能够输入文字； 
+   能够用＜Backspace＞和＜Delete＞键删除字符； 
+   能够移动光标； 
+   能够在光标处插入字符； 
+   能够创建、打开、编辑和保存文件。 
+
+b. 高级编辑 
+   能够用＜Shift＞＋＜光标移动键＞选择文本块； 
+   能够用＜Backspace＞和＜Delete＞键删除文本块； 
+   能够用＜ctrl＞＋＜X＞、＜ctrl＞＋＜C＞、＜ctrl＞＋＜V＞进行剪切、复制、粘贴； 
+   加入菜单支持（菜单样式见下图，红色字符为激活键）。
+   "File  Edit  Help" 
+    New   Cut   About
+    Open  Copy 
+    Save  Paste
+    Exit  Delete
+        
+c. 鼠标支持 
+   实现鼠标的菜单操作； 
+   实现鼠标选择块。 
+
+ 
+ 

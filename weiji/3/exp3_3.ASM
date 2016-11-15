@@ -1,0 +1,181 @@
+	SSTACK SEGMENT STACK
+			DW 32 DUP(?)
+	SSTACK ENDS
+
+	CODE SEGMENT
+			ASSUME CS:CODE
+	START: 	PUSH DS
+			MOV AX, 0000H
+			MOV DS, AX
+
+			;;设置int6的中断程序     ;参照课本8259用例代码
+			MOV AX,0
+			MOV ES,AX
+			MOV DI,38H
+			MOV AX,OFFSET MIT6
+			CLD
+			STOSW;保存段内偏移
+			MOV AX,SEG MIT6
+			STOSW;保存段基地址
+			
+			;;设置int7的中断程序
+			MOV AX,0
+			MOV ES,AX
+			MOV DI,3CH
+			MOV AX,OFFSET MIT7
+			CLD
+			STOSW;保存段内偏移
+			MOV AX,SEG MIT7
+			STOSW;保存段基地址
+			POP DS
+
+			;8255
+			MOV DX, 0646H 
+			MOV AL, 90H 
+			OUT DX, AL 
+
+			;8259
+			CLI
+			MOV DX,0020H       ;只用了一片8259，故没有初始化ICW3
+			MOV AL,13H
+			OUT DX,AL;ICW1
+			MOV DX,0021H
+			MOV AL,08H
+			OUT DX,AL;ICW2
+			MOV AL,01H
+			OUT DX,AL;ICW4			
+			STI
+
+	AA0:	MOV DX, 0642H
+			MOV AL, 0FFH
+			OUT DX, AL
+			CALL DELAY
+			CALL DELAY
+			JMP AA0
+
+	MIT6	PROC NEAR                 ;将中断延迟调用改为多次输出灯的状态并直接在中断程序中延迟，同时控制台每次输出‘6’或‘7’方便观察实验现象。
+			STI		  ;两段中断程序开头写STI开中断允许多重中断发生
+			MOV DX, 0642H
+			MOV AL, 0FH
+			OUT DX, AL
+			
+			MOV DL,''	  ;控制台输出字符'6'表明在执行中断服务程序MIT6
+			MOV AH,02H
+			INT 21H			
+			MOV CX,0FFFFH
+	DE61:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0FH
+			OUT DX, AL
+			POP AX
+			LOOP DE61
+			
+
+			MOV DL,''
+			MOV AH,02H
+			INT 21H			
+			MOV CX,0FFFFH
+	DE62:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0FH
+			OUT DX, AL
+			POP AX
+			LOOP DE62
+			
+			MOV DL,''
+			MOV AH,02H
+			INT 21H		
+			MOV CX,0FFFFH
+	DE63:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0FH
+			OUT DX, AL	
+			POP AX
+			LOOP DE63
+			
+			MOV DL,''
+			MOV AH,02H
+			INT 21H		
+			MOV CX,0FFFFH
+	DE64:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0FH
+			OUT DX, AL	
+			POP AX
+			LOOP DE64
+			
+			MOV AL, 27H
+			OUT 20H, AL
+			IRET
+	MIT6	ENDP
+
+	MIT7	PROC NEAR
+			STI
+			MOV DX, 0642H
+			MOV AL, 0F0H
+			OUT DX ,AL
+			
+			MOV DL,''          ;控制台输出字符'7'表明在执行中断服务程序MIT7
+			MOV AH,02H
+			INT 21H			
+			MOV CX,0FFFFH
+	DE71:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0F0H
+			OUT DX, AL
+			POP AX
+			LOOP DE71
+			
+			MOV DL,''
+			MOV AH,02H
+			INT 21H			
+			MOV CX,0FFFFH
+	DE72:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0F0H
+			OUT DX, AL
+			POP AX
+			LOOP DE72
+			
+			MOV DL,''
+			MOV AH,02H
+			INT 21H			
+			MOV CX,0FFFFH
+	DE73:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0F0H
+			OUT DX, AL
+			POP AX
+			LOOP DE73
+			
+			MOV DL,''
+			MOV AH,02H
+			INT 21H			
+			MOV CX,0FFFFH
+	DE74:	PUSH AX
+			MOV DX, 0642H
+			MOV AL, 0F0H
+			OUT DX, AL
+			POP AX
+			LOOP DE74			
+			MOV AL, 27H
+			OUT 20H, AL
+			IRET
+	MIT7	ENDP
+	
+	DELAY	PROC NEAR
+			PUSH CX
+			MOV CX,0FFFFH
+	DE1:	PUSH AX
+			POP AX
+			LOOP DE1
+			MOV CX,0FFFFH
+	DE2:	PUSH AX
+			POP AX
+			LOOP DE2
+			POP CX
+			RET
+	DELAY   ENDP
+
+	CODE ENDS
+			END START

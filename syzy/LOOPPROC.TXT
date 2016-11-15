@@ -1,0 +1,78 @@
+;-----------------------------------------------------
+;编程提示中介绍的宏CALLDOS和CRLF
+ CALLDOS MACRO FUNCTION     ;定义宏指令CALLDOS
+         MOV  AH, FUNCTION
+         INT  21H
+         ENDM               ;宏CALLDOS结束
+         
+ CRLF    MACRO              ;定义宏指令CRLF
+         MOV  DL, 0DH       ;回车
+         CALLDOS 2          ;2号功能调用————显示字符 
+         MOV  DL，0AH       ;换行
+         CALLDOS 2 
+         ENDM               ;宏CRLF结束
+
+DATA      SEGMENT
+MESSAGE   DB  'Please input 10 numbers:',0DH,0AH,'$'
+;键盘缓冲区
+KB_BUF    DB  3            ;定义可接收最大字符数（包括回车键）
+ACTLEN    DB  ?            ;实际输入的字符数
+BUFFER    DB  3  DUP(?)    ;输入的字符放在此区域中
+;数据及统计结果
+NUMBERS   DB  10 DUP(?)    ;键入的数据转换成二进制后放在此处
+LE59      DB  0            ;0～59的个数
+GE60      DB  0            ;60～79的个数
+GE80      DB  0            ;80～99的个数
+;显示结果的字符串
+SORTSTR   DB  'Sorted numbers:'
+SORTNUM   DB  10 DUP(20H,20H,','),0DH,0AH
+MESS00    DB  ' 0-59: 00',0DH,0AH
+MESS60    DB  '60-79: 00',0DH,0AH
+MESS80    DB  '80-99: 00',0DH,0AH,'$'
+DATA      ENDS 
+
+CODE      SEGMENT 
+          ASSUME  CS:CODE, DS:DATA
+START:    MOV  AX, DATA
+          MOV  DS, AX
+          ;------------------------------------------------------
+          ;1.显示MESSAGE提示信息的指令序列插入到此处
+
+          
+          MOV  CX, 10               ;共读入10个数据
+          LEA  DI, NUMBERS          ;设置数据保存区指针	
+LP1: 
+          ;------------------------------------------------------
+          ;2.从键盘读入一个数据，转换成二进制数存入DI所指向的内存
+          ;  单元的指令序列插入到此处
+
+
+          INC  DI                   ;指向下一个数据保存单元
+          CRLF                      ;回车换行，在下一行输入
+          LOOP LP1                  ;直到10个数据都输入完
+          ;------------------------------------------------------
+          ;3.对NUMBERS中的10个数据排序的指令序列插入到此处
+
+
+          ;------------------------------------------------------
+          ;4.对NUMBERS中的10个数据进行统计，结果放在GE80、GE60和
+          ;  LE59中的指令序列插入到此处
+          
+
+          ;------------------------------------------------------
+          ;5.把排序后的10个数据转换成ASCII码依次存入SORTNUM字符串
+          ;  中的指令序列插入到到此处
+
+
+          ;------------------------------------------------------
+          ;6.把GE80、GE60和LE59中的统计结果转换成ASCII码存入
+          ;  MESS80、MESS60和MESS00字符串中的指令序列插入到到此处
+
+
+          LEA  DX, SORTSTR           ;显示排序和统计的结果
+          MOV  AH, 9
+          INT  21H
+          MOV  AH, 4CH
+          INT  21H 
+CODE      ENDS
+          END  START 

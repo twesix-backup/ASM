@@ -1,0 +1,43 @@
+DATA    SEGMENT
+
+;8255并行输入输出接口
+CON8255 EQU 0646H
+PA8255  EQU 0640H
+PB8255  EQU 0642H
+PC8255  EQU 0644H
+
+
+
+
+DATA    ENDS
+
+CODE    SEGMENT
+
+    ASSUME CS:CODE,DS:DATA
+    
+START:
+    MOV AX,DATA
+    MOV DS,AX
+    
+    
+    MOV AH,4CH
+    INT 21H
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;8255并行接口
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+INIT_8255   PROC NEAR
+    
+    MOV AL,00001001B ;8255并行输入输出接口初始化控制字
+    MOV DX,CON8255
+    OUT DX,AL
+    RET
+    
+INIT_8255   ENDP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
+CODE    ENDS
+
+END     START

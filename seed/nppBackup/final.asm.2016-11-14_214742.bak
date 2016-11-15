@@ -1,0 +1,58 @@
+DATA    SEGMENT
+
+;8255并行输入输出接口
+CON8255 EQU 0646H
+PA8255  EQU 0640H
+PB8255  EQU 0642H
+PC8255  EQU 0644H
+
+;ADC0809
+CONADC  EQU 0600H
+;向这个地址写数据选择某个口启动转换，
+;转换完成之后从这个口读取数据
+
+;DAC0832
+CONDAC  EQU 0600H
+;使用时直接往这个口输出数字量即可
+
+;8253/8254定时计数器
+CON8254 EQU 0606H
+CH08254 EQU 0600H
+CH18254 EQU 0602H
+CH28254 EQU 0604H
+
+DATA    ENDS
+
+CODE    SEGMENT
+
+    ASSUME CS:CODE,DS:DATA
+    
+START:
+    MOV AX,DATA
+    MOV DS,AX
+    
+    
+    MOV AH,4CH
+    INT 21H
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;8255并行接口
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+INIT_8255   PROC NEAR
+    
+    MOV AL,00001001B ;8255并行输入输出接口初始化控制字
+    MOV DX,CON8255
+    OUT DX,AL
+    RET
+    
+INIT_8255   ENDP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;ADC0809
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+INIT_ADC    PROC
+    MOV AL,10000000B
+    
+    
+CODE    ENDS
+
+END     START
